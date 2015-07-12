@@ -1,7 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
-let g:netrw_dirhist_1='/home/daniel/Documentos/Projetos'
-let g:netrw_dirhist_2='/home/daniel/Documentos/Projetos/Automation'
-let g:netrw_dirhist_3='/home/daniel/Documentos/Projetos/Automation/testeClone'
-let g:netrw_dirhist_4='/home/daniel/Documentos/Projetos/Automation/testeClone/setup'
-let g:netrw_dirhist_5='/home/daniel/Documentos/Projetos/Automation/testeClone/MovingAroundTest/daniel_Project/daniel/Development/Infrastructure/Provision'
