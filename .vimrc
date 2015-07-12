@@ -114,3 +114,7 @@ nnoremap <leader>ev <C-w><C-v><C-w><C-w><cr>
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif 
+
+"remove .netrwhist 
+au VimLeave * if filereadable("[path here]/.netrwhist")|call 
+delete("[path here]/.netrwhist")|endif 
