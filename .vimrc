@@ -3,11 +3,12 @@ filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-  Bundle 'altercation/vim-colors-solarized.git'
-  Bundle 'bling/vim-airline'
-  Bundle 'romainl/apprentice'
-  Bundle 'SirVer/ultisnips'
-"  Bundle 'emgram79/vim-multiuser'
+  Bundle 'altercation/vim-colors-solarized.git'                                                                                                                     
+  6 " Bundle 'bling/vim-airline'                                                                                                                                       
+  7   Bundle 'romainl/apprentice'                                                                                                                                       
+  8   Bundle 'SirVer/ultisnips'                                                                                                                                         
+  9 " Bundle 'edkolev/tmuxline.vim'                                                                                                                                    
+ 10 " Bundle 'emgram79/vim-multiuser' 
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
