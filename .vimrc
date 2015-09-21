@@ -116,5 +116,5 @@ if filereadable("/etc/vim/vimrc.local")
 endif 
 
 "remove .netrwhist 
-au VimLeave * if filereadable("[path here]/.netrwhist")|call 
-delete("[path here]/.netrwhist")|endif 
+"au VimLeave * if filereadable("[path here]/.netrwhist")|call 
+"delete("[path here]/.netrwhist")|endif 
