@@ -4,11 +4,12 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
   Bundle 'altercation/vim-colors-solarized.git'                                                                                                                     
-  6 " Bundle 'bling/vim-airline'                                                                                                                                       
-  7   Bundle 'romainl/apprentice'                                                                                                                                       
-  8   Bundle 'SirVer/ultisnips'                                                                                                                                         
-  9 " Bundle 'edkolev/tmuxline.vim'                                                                                                                                    
- 10 " Bundle 'emgram79/vim-multiuser' 
+  "Bundle 'bling/vim-airline'                                                                                                                                       
+  Bundle 'romainl/apprentice'                                                                                                                                       
+  Bundle 'SirVer/ultisnips'
+  "Bundle 'Valloric/YouCompleteMe' "Precisa compilar após pluginInstall. Bom com TernJS junto, porém precisa do npm.
+  "Bundle 'edkolev/tmuxline.vim'                                                                                                                                    
+  "Bundle 'emgram79/vim-multiuser' 
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
