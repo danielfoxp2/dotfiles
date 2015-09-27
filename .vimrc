@@ -9,7 +9,8 @@ call vundle#begin()
   Bundle 'SirVer/ultisnips'
   "Bundle 'Valloric/YouCompleteMe' "Precisa compilar após pluginInstall. Bom com TernJS junto, porém precisa do npm.
   "Bundle 'edkolev/tmuxline.vim'                                                                                                                                    
-  "Bundle 'emgram79/vim-multiuser' 
+  "Bundle 'emgram79/vim-multiuser'
+  "Bundle 'FredKSchott/CoVim' "If environment is configured for it, is just PluginInstall this.
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
