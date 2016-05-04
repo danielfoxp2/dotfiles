@@ -3,27 +3,14 @@ filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+  Bundle 'VundleVim/Vundle.vim'
   Bundle 'altercation/vim-colors-solarized.git'                                                                                                                     
-  "Bundle 'bling/vim-airline'                                                                                                                                       
   Bundle 'romainl/apprentice'                                                                                                                                       
-  Bundle 'SirVer/ultisnips'
-  "Precisa compilar após pluginInstall. Bom com TernJS junto, porém precisa do npm.
-  "Bundle 'Valloric/YouCompleteMe' 
-  "Bundle 'edkolev/tmuxline.vim'                                                                                                                                    
-  "Bundle 'emgram79/vim-multiuser'
-  "If environment is configured for it, is just PluginInstall this.
-  "Bundle 'FredKSchott/CoVim' 
+  Bundle 'tpope/vim-surround'
+  Bundle 'ctrlpvim/ctrlp.vim'
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
-
-"ultisnips config
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-n>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-let g:UltiSnipsEditSplit="vertical"
-
-
 
 set t_Co=256
 set t_ut=
@@ -80,8 +67,9 @@ set showtabline=2
 set winwidth=79
 set shell=bash
 "set t_ti= t_te=
-"set scrolloff=3
+set scrolloff=3 "Seems to be the way to show lines above/below the cursor
 set nobackup
+set autoread "Reload a file without asking when it is changed outside vim.
 set nowritebackup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
@@ -90,6 +78,7 @@ filetype plugin indent on
 set wildmode=longest,list
 "set wildmenu
 set timeout timeoutlen=1000 ttimeoutlen=100
+"au FocusLost * :wa "Save automatically when focus is lost
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod=':t'
@@ -108,7 +97,7 @@ nnoremap <left> <nop>
 nnoremap <right> <nop>
 
 inoremap <up> <nop>
-inoremap <left> <nop>
+inoremap <left> <ESC>
 inoremap <down> <nop>
 inoremap <right> <nop>
 
@@ -116,6 +105,17 @@ nnoremap ; :
 
 nnoremap <leader>ev <C-w><C-v><C-w><C-w><cr>
 
+"Change caps to UPPERCASE
+nnoremap <C-u> gUiw
+inoremap <C-u> <esc>gUiwea
+
+"Change caps to lowercase
+nnoremap <C-l> guiw
+inoremap <C-l> <esc>guiwea
+
+"When search and move around results, show them in the center of window
+nnoremap n nzzzv
+nnoremap N Nzzzv
 
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
