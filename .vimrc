@@ -8,6 +8,7 @@ call vundle#begin()
   Bundle 'romainl/apprentice'                                                                                                                                       
   Bundle 'tpope/vim-surround'
   Bundle 'ctrlpvim/ctrlp.vim'
+  Bundle 'elixir-lang/vim-elixir'
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
