@@ -106,11 +106,11 @@ nnoremap ; :
 
 nnoremap <leader>ev <C-w><C-v><C-w><C-w><cr>
 
-"Change caps to UPPERCASE
+"Change caps to UPPERCASE in NORMAL and INSERT mode
 nnoremap <C-u> gUiw
 inoremap <C-u> <esc>gUiwea
 
-"Change caps to lowercase
+"Change caps to lowercase in NORMAL and INSERT mode
 nnoremap <C-l> guiw
 inoremap <C-l> <esc>guiwea
 
@@ -118,6 +118,163 @@ inoremap <C-l> <esc>guiwea
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
+"To take off the highlited results of search
+nnoremap <BS> :nohlsearch<cr>
+
+"To fast switch between previous and current file
+nnoremap <leader><leader> <c-^>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AUTO CREATION OF NON-EXISTENT DIRECTORIES
+" Found at http://www.ibm.com/developerworks/library/l-vim-script-5/
+" Everytime that a file is edited, if its path contains directories
+" inexistent, vim will create those dirs, avoinding the horrible
+" E212 - Can't open file for writing
+" The only problem is that the file will be created regardless you
+" save the file or not. So if you open a file in nonexistent 
+" directories and decides not keep the file, you will need to go
+" deleting each new directory created.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+augroup AutoMkdir
+    autocmd!
+    autocmd BufNewFile * :call EnsureDirExists()
+augroup END
+function! EnsureDirExists()
+    let required_dir = expand("%:h")
+    if !isdirectory(required_dir)
+        call mkdir(required_dir, 'p')
+    endif
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MULTIPURPOSE TAB KEY
+" Indent if we are in the begining of a line. Else, do completion.
+" I've changed the name of the function which was InsertTabWrapper()
+" Stoled from THE GREAT Gary Bernhardt.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! MultiPurposeTab()
+    let col = col('.') - 1
+    if !col || getline('.')[col -1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+endfunction
+inoremap <tab> <c-r>=MultiPurposeTab()<cr>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" RENAME CURRENT FILE
+" Enables even change file directory while renaming
+" Changes vim buffer too
+" Stoled from THE GREAT Gary Bernhardt.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! RenameFile()
+    let old_name = expand('%')
+    let new_dir = expand('%:h')
+    let new_name = input('New file name: ', expand('%'))
+    if new_name != '' && new_name != old_name
+        exec ':saveas ' . new_name
+        exec ':silent !rm ' . old_name 
+        redraw!
+    endif
+endfunction
+map <leader>n :call RenameFile()<cr>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SWITCH BETWEEN TEST AND PRODUCTION CODE FOR ELIXIR
+" Variation of a function from THE GREAT Gary Bernhardt.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! OpenTestAlternate()
+    let new_file = AlternateForCurrentFile()
+    exec ':e ' . new_file
+endfunction
+function! AlternateForCurrentFile()
+    let current_file = expand("%")
+    let new_file = current_file
+    let in_spec = match(current_file, '_spec') != -1
+    let going_to_spec = !in_spec
+    let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1
+    if going_to_spec
+        if in_app
+            let new_file = substitute(new_file, '^app/', '', '')
+        end
+        let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
+        let new_file = substitute(new_file, 'lib/', 'spec/unit/', '')
+    else
+        let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
+        let new_file = substitute(new_file, 'spec/unit/', 'lib/', '')
+        if in_app
+            let new_file = 'app/' . new_file
+        end
+    endif
+    return new_file
+        endfunction
+nnoremap <leader>. :call OpenTestAlternate()<cr>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" RUNNING TESTS IN ANOTHER CONTAINER
+" Variation of functions from THE GREAT Gary Bernhardt.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! MapCRtoRunTests()
+    nnoremap <cr> :call RunTestFile()<cr>
+endfunction
+call MapCRtoRunTests()
+
+function! RunTestFile()
+    if a:0
+        let command_suffix = a:1
+    else
+        let command_suffix = ""
+    endif
+    call RunTestsForPreviousMarkedFile(command_suffix)
+endfunction
+
+function! RunTestsForPreviousMarkedFile(command_suffix)
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.exs\|)$') != -1
+    if in_test_file
+        call MarkFileAsCurrentTest(command_suffix)
+    elseif !exists("t:dm_test_file")
+        return
+    end
+    call RunTests(t:dm_test-file)
+endfunction
+
+function! MarkFileAsCurrentTest(command_suffix)
+    let t:dm_test_file=@% . a:command_suffix
+endfunction
+
+function! RunTests(filename)
+    "Save the file and run tests for the given filename
+    if expand("%") != ""
+        :w
+    end
+    if match(a:filename, '\.feature$') != -1
+        "Executa comandos para rodar cucumber
+        "Exemplo exec ":!script/features <fecha-aspas> . a:filename
+    else
+        "It is more hard than I thougth to run the tests in elixir
+        "I need to be in the same directory that mix.ex is to be
+        "able to execute tests with the command mix espec.
+        "In any other folder, the command don't work.
+        "When using the CR key, I will be in some file _spec.exs
+        "or I will have marked a previous file to run
+        "So I need to take the file name with the path
+        "then I need to go up in folders till I find the upper directory
+        "where mix.exs is. Then I call mix espec passing the file name.
+        "This is something weird, because my tests will lose speed
+        "Ok, I got the file name
+        "remove everything after "apps/someprojectname/ 
+        "then I call cd to change to there
+        "call mix espec file name
+        "and return to the last dir with cd -
+        "I don't know if it is needed go back to the previous dir
+        "may be this is unecessary
+    end
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
