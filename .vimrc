@@ -228,11 +228,11 @@ function! RunTestFile()
     else
         let command_suffix = ""
     endif
-    call RunTestsForPreviousMarkedFile(command_suffix)
+    call RunTestsForMarkedFile(command_suffix)
 endfunction
 
-function! RunTestsForPreviousMarkedFile(command_suffix)
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.exs\|)$') != -1
+function! RunTestsForMarkedFile(command_suffix)
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.exs)$') != -1
     if in_test_file
         call MarkFileAsCurrentTest(command_suffix)
     elseif !exists("t:dm_test_file")
@@ -246,6 +246,11 @@ function! MarkFileAsCurrentTest(command_suffix)
 endfunction
 
 function! RunTests(filename)
+    "I think I'll change matchstr to take just /work/project/
+    "instead of go till apps. Because that way the tests will run
+    "regardless whether it is an umbrella or just a regular elixir project.
+
+    let g:docker_command = ':!docker exec -it elixir bash -c '
     "Save the file and run tests for the given filename
     if expand("%") != ""
         :w
@@ -254,23 +259,15 @@ function! RunTests(filename)
         "Executa comandos para rodar cucumber
         "Exemplo exec ":!script/features <fecha-aspas> . a:filename
     else
-        "It is more hard than I thougth to run the tests in elixir
-        "I need to be in the same directory that mix.ex is to be
-        "able to execute tests with the command mix espec.
-        "In any other folder, the command don't work.
-        "When using the CR key, I will be in some file _spec.exs
-        "or I will have marked a previous file to run
-        "So I need to take the file name with the path
-        "then I need to go up in folders till I find the upper directory
-        "where mix.exs is. Then I call mix espec passing the file name.
-        "This is something weird, because my tests will lose speed
         "Ok, I got the file name
         "remove everything after "apps/someprojectname/ 
         "then I call cd to change to there
         "call mix espec file name
-        "and return to the last dir with cd -
-        "I don't know if it is needed go back to the previous dir
-        "may be this is unecessary
+        let mixPathToRunTests = matchstr(expand("%"), '\(.\+\)\/apps\/.\{-}\/')
+        echo mixPathToRunTests
+        exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
+        
+
     end
 endfunction
 
