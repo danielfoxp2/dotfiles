@@ -246,9 +246,6 @@ function! MarkFileAsCurrentTest(command_suffix)
 endfunction
 
 function! RunTests(filename)
-    "I think I'll change matchstr to take just /work/project/
-    "instead of go till apps. Because that way the tests will run
-    "regardless whether it is an umbrella or just a regular elixir project.
 
     let g:docker_command = ':!docker exec -it elixir bash -c '
     "Save the file and run tests for the given filename
@@ -259,7 +256,8 @@ function! RunTests(filename)
         "Executa comandos para rodar cucumber
         "Exemplo exec ":!script/features <fecha-aspas> . a:filename
     else
-        let mixPathToRunTests = matchstr(expand("%:p"), '\(.\+\)\/apps\/.\{-}\/')
+        "let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
+        let mixPathToRunTests = matchstr(a:filename, '\(.*\)\/work\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
     end
 endfunction
