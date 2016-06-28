@@ -232,17 +232,17 @@ function! RunTestFile()
 endfunction
 
 function! RunTestsForMarkedFile(command_suffix)
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.exs)$') != -1
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.exs\)$') != -1
     if in_test_file
-        call MarkFileAsCurrentTest(command_suffix)
+        call MarkFileAsCurrentTest(a:command_suffix)
     elseif !exists("t:dm_test_file")
         return
     end
-    call RunTests(t:dm_test-file)
+    call RunTests(t:dm_test_file)
 endfunction
 
 function! MarkFileAsCurrentTest(command_suffix)
-    let t:dm_test_file=@% . a:command_suffix
+    let t:dm_test_file=expand("%:p") . a:command_suffix
 endfunction
 
 function! RunTests(filename)
@@ -259,15 +259,8 @@ function! RunTests(filename)
         "Executa comandos para rodar cucumber
         "Exemplo exec ":!script/features <fecha-aspas> . a:filename
     else
-        "Ok, I got the file name
-        "remove everything after "apps/someprojectname/ 
-        "then I call cd to change to there
-        "call mix espec file name
-        let mixPathToRunTests = matchstr(expand("%"), '\(.\+\)\/apps\/.\{-}\/')
-        echo mixPathToRunTests
+        let mixPathToRunTests = matchstr(expand("%:p"), '\(.\+\)\/apps\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
-        
-
     end
 endfunction
 
