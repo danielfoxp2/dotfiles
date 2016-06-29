@@ -184,6 +184,8 @@ map <leader>n :call RenameFile()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SWITCH BETWEEN TEST AND PRODUCTION CODE FOR ELIXIR
 " Variation of a function from THE GREAT Gary Bernhardt.
+" Need improvement yet. Because I don't know how to work with phoenix
+" so the in_app logic is not correct
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! OpenTestAlternate()
     let new_file = AlternateForCurrentFile()
@@ -216,13 +218,18 @@ nnoremap <leader>. :call OpenTestAlternate()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RUNNING TESTS IN ANOTHER CONTAINER
 " Variation of functions from THE GREAT Gary Bernhardt.
+" Further improvements: Run tests for elixir and for Javascript too
+" To do this, when call ENTER - for example - do a match to see if
+" the called file is an elixir or js file. Then call the right function
+" to either case
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! MapCRtoRunTests()
     nnoremap <cr> :call RunTestFile()<cr>
 endfunction
 call MapCRtoRunTests()
+nnoremap <leader>a :call RunTests('')<cr>
 
-function! RunTestFile()
+function! RunTestFile(...)
     if a:0
         let command_suffix = a:1
     else
@@ -242,13 +249,12 @@ function! RunTestsForMarkedFile(command_suffix)
 endfunction
 
 function! MarkFileAsCurrentTest(command_suffix)
-    let t:dm_test_file=expand("%:p") . a:command_suffix
+    let t:dm_test_file = expand("%:p") . a:command_suffix
 endfunction
 
 function! RunTests(filename)
-
     let g:docker_command = ':!docker exec -it elixir bash -c '
-    "Save the file and run tests for the given filename
+    "Save the file and run tests
     if expand("%") != ""
         :w
     end
@@ -256,8 +262,7 @@ function! RunTests(filename)
         "Executa comandos para rodar cucumber
         "Exemplo exec ":!script/features <fecha-aspas> . a:filename
     else
-        "let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
-        let mixPathToRunTests = matchstr(a:filename, '\(.*\)\/work\/.\{-}\/')
+        let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
     end
 endfunction
