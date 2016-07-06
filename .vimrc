@@ -129,11 +129,9 @@ nnoremap <leader><leader> <c-^>
 " Found at http://www.ibm.com/developerworks/library/l-vim-script-5/
 " Everytime that a file is edited, if its path contains directories
 " inexistent, vim will create those dirs, avoinding the horrible
-" E212 - Can't open file for writing
-" The only problem is that the file will be created regardless you
-" save the file or not. So if you open a file in nonexistent 
-" directories and decides not keep the file, you will need to go
-" deleting each new directory created.
+" E212 - Can't open file for writing.
+" If the directory does not exist it will ask if you want to create it
+" Very nice...
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup AutoMkdir
     autocmd!
@@ -142,7 +140,18 @@ augroup END
 function! EnsureDirExists()
     let required_dir = expand("%:h")
     if !isdirectory(required_dir)
-        call mkdir(required_dir, 'p')
+        call AskQuit("Directory '" . required_dir . "' doesn't exist.", "&Create it?")
+        try 
+            call mkdir(required_dir, 'p')
+        catch
+            call AskQuit("Can't create '" . required_dir . "'", "&Continue anyway?")
+        endtry
+    endif
+endfunction
+
+function! AskQuit(msg, proposed_action)
+    if confirm(a:msg, "&Quit?\n" . a:proposed_action) == 1
+        exit
     endif
 endfunction
 
@@ -202,10 +211,10 @@ function! AlternateForCurrentFile()
             let new_file = substitute(new_file, '^app/', '', '')
         end
         let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
-        let new_file = substitute(new_file, 'lib/', 'spec/unit/', '')
+        let new_file = substitute(new_file, 'lib/', 'spec/', '')
     else
         let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
-        let new_file = substitute(new_file, 'spec/unit/', 'lib/', '')
+        let new_file = substitute(new_file, 'spec/', 'lib/', '')
         if in_app
             let new_file = 'app/' . new_file
         end
@@ -222,6 +231,7 @@ nnoremap <leader>. :call OpenTestAlternate()<cr>
 " To do this, when call ENTER - for example - do a match to see if
 " the called file is an elixir or js file. Then call the right function
 " to either case
+" Probably I will change the ENTER key to space. Way more confortable
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! MapCRtoRunTests()
     nnoremap <cr> :call RunTestFile()<cr>
