@@ -124,6 +124,9 @@ nnoremap <BS> :nohlsearch<cr>
 "To fast switch between previous and current file
 nnoremap <leader><leader> <c-^>
 
+" Remap F5 to change fast between listed buffers
+nnoremap <F5> :buffers<CR>:buffer<space>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AUTO CREATION OF NON-EXISTENT DIRECTORIES
 " Found at http://www.ibm.com/developerworks/library/l-vim-script-5/
