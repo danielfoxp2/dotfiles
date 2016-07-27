@@ -127,7 +127,14 @@ nnoremap <leader><leader> <c-^>
 " Remap F5 to change fast between listed buffers
 nnoremap <F5> :buffers<CR>:buffer<space>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set .feature files as cucumber filetype then set standard 
+" indentation for cucumber filetype
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd BufnewFile,BufReadPost *.feature set filetype=cucumber
 autocmd FileType cucumber set ai sw=2 sts=2 et
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AUTO CREATION OF NON-EXISTENT DIRECTORIES
 " Found at http://www.ibm.com/developerworks/library/l-vim-script-5/
@@ -158,6 +165,7 @@ function! AskQuit(msg, proposed_action)
         exit
     endif
 endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -253,7 +261,7 @@ function! RunTestFile(...)
 endfunction
 
 function! RunTestsForMarkedFile(command_suffix)
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.exs\)$') != -1
+    let in_test_file = match(expand("%"), '\(_context.exs\|.feature\|_spec.exs\)$') != -1
     if in_test_file
         call MarkFileAsCurrentTest(a:command_suffix)
     elseif !exists("t:dm_test_file")
@@ -272,9 +280,11 @@ function! RunTests(filename)
     if expand("%") != ""
         :w
     end
-    if match(a:filename, '\.feature$') != -1
-        "Executa comandos para rodar cucumber
-        "Exemplo exec ":!script/features <fecha-aspas> . a:filename
+    if match(a:filename, '\(_context.exs\|.feature\)$') != -1
+        "Como o white_bread tem bastante limitacao entao nao sera possivel
+        "executar um unico arquivo feature como pode ser feito em outras
+        "implementacoes do cucumber. Portanto, ao identificar os tipos de
+        "arquivos acima, sera executada toda suite de features existentes
     else
         let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
