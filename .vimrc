@@ -207,12 +207,49 @@ map <leader>n :call RenameFile()<cr>
 " Variation of a function from THE GREAT Gary Bernhardt.
 " Need improvement yet. Because I don't know how to work with phoenix
 " so the in_app logic is not correct
+" 
+" need to make it handle with alternate between acceptance too
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! OpenTestAlternate()
     let new_file = AlternateForCurrentFile()
     exec ':e ' . new_file
 endfunction
 function! AlternateForCurrentFile()
+    let current_file = expand("%")
+
+    let going_to_acceptance = match(current_file, '\(.feature\|_context.exs\)$') != -1
+
+    if going_to_acceptance
+        call DealWithAcceptance()
+    else
+        call DealWithUnits()
+    endif
+
+"    let new_file = current_file
+"    let in_spec = match(current_file, '_spec') != -1
+"    let going_to_spec = !in_spec
+"    let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1
+"    if going_to_spec
+"        if in_app
+"            let new_file = substitute(new_file, '^app/', '', '')
+"        end
+"        let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
+"        let new_file = substitute(new_file, 'lib/', 'spec/', '')
+"    else
+"        let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
+"        let new_file = substitute(new_file, 'spec/', 'lib/', '')
+"        if in_app
+"            let new_file = 'app/' . new_file
+"        end
+"    endif
+"    return new_file
+endfunction
+nnoremap <leader>. :call OpenTestAlternate()<cr>
+
+function! DealWithAcceptance()
+endfunction
+
+function! DealWithUnits()
     let current_file = expand("%")
     let new_file = current_file
     let in_spec = match(current_file, '_spec') != -1
@@ -232,8 +269,7 @@ function! AlternateForCurrentFile()
         end
     endif
     return new_file
-        endfunction
-nnoremap <leader>. :call OpenTestAlternate()<cr>
+endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -285,6 +321,8 @@ function! RunTests(filename)
         "executar um unico arquivo feature como pode ser feito em outras
         "implementacoes do cucumber. Portanto, ao identificar os tipos de
         "arquivos acima, sera executada toda suite de features existentes
+        let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/apps\/.\{-}\/')
+        exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix white_bread.run " . a:filename . "\""
     else
         let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
