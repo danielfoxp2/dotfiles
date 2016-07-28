@@ -220,36 +220,30 @@ function! AlternateForCurrentFile()
     let going_to_acceptance = match(current_file, '\(.feature\|_context.exs\)$') != -1
 
     if going_to_acceptance
-        call DealWithAcceptance()
+        let new_file = BuildAcceptancePath()
     else
-        call DealWithUnits()
+        let new_file = BuildUnitsPath()
     endif
 
-"    let new_file = current_file
-"    let in_spec = match(current_file, '_spec') != -1
-"    let going_to_spec = !in_spec
-"    let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1
-"    if going_to_spec
-"        if in_app
-"            let new_file = substitute(new_file, '^app/', '', '')
-"        end
-"        let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
-"        let new_file = substitute(new_file, 'lib/', 'spec/', '')
-"    else
-"        let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
-"        let new_file = substitute(new_file, 'spec/', 'lib/', '')
-"        if in_app
-"            let new_file = 'app/' . new_file
-"        end
-"    endif
-"    return new_file
+    return new_file
 endfunction
 nnoremap <leader>. :call OpenTestAlternate()<cr>
 
-function! DealWithAcceptance()
+function! BuildAcceptancePath()
+    let current_file = expand("%")
+    let new_file = current_file
+    let in_feature = match(current_file, '.feature$') != -1
+    if in_feature 
+        let new_file = substitute(new_file, '\.feature$', '_context.exs', '')
+        let new_file = substitute(new_file, 'features/', 'features/contexts/', '')
+    else
+        let new_file = substitute(new_file, '_context\.exs$', '.feature', '')
+        let new_file = substitute(new_file, 'features/contexts/', 'features/', '')
+    endif
+    return new_file
 endfunction
 
-function! DealWithUnits()
+function! BuildUnitsPath()
     let current_file = expand("%")
     let new_file = current_file
     let in_spec = match(current_file, '_spec') != -1
