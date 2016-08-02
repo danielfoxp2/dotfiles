@@ -179,6 +179,7 @@ function! MultiPurposeTab()
         return "\<tab>"
     else
         return "\<c-p>"
+    endif
 endfunction
 inoremap <tab> <c-r>=MultiPurposeTab()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -252,7 +253,7 @@ function! BuildUnitsPath()
     if going_to_spec
         if in_app
             let new_file = substitute(new_file, '^app/', '', '')
-        end
+        endif
         let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
         let new_file = substitute(new_file, 'lib/', 'spec/', '')
     else
@@ -260,7 +261,7 @@ function! BuildUnitsPath()
         let new_file = substitute(new_file, 'spec/', 'lib/', '')
         if in_app
             let new_file = 'app/' . new_file
-        end
+        endif
     endif
     return new_file
 endfunction
@@ -291,12 +292,12 @@ function! RunTestFile(...)
 endfunction
 
 function! RunTestsForMarkedFile(command_suffix)
-    let in_test_file = match(expand("%"), '\(_context.exs\|.feature\|_spec.exs\)$') != -1
+    let in_test_file = match(expand("%"), '\(_context.exs\|.feature\|_test.exs\|_spec.exs\)$') != -1
     if in_test_file
         call MarkFileAsCurrentTest(a:command_suffix)
     elseif !exists("t:dm_test_file")
         return
-    end
+    endif
     call RunTests(t:dm_test_file)
 endfunction
 
@@ -309,7 +310,7 @@ function! RunTests(filename)
     "Save the file and run tests
     if expand("%") != ""
         :w
-    end
+    endif
     if match(a:filename, '\(_context.exs\|.feature\)$') != -1
         "Como o white_bread tem bastante limitacao entao nao sera possivel
         "executar um unico arquivo feature como pode ser feito em outras
@@ -317,10 +318,13 @@ function! RunTests(filename)
         "arquivos acima, sera executada toda suite de features existentes
         let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/apps\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix white_bread.run " . a:filename . "\""
+    elseif match(a:filename, '_test.exs')
+        let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/apps\/.\{-}\/')
+        exec g:docker_command . "\"cd " . mixPathToRunTests . " && elixir " . a:filename . "\""
     else
         let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
         exec g:docker_command . "\"cd " . mixPathToRunTests . " && mix espec " . a:filename . "\""
-    end
+    endif
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
