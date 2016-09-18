@@ -53,8 +53,8 @@ set number		" Show line numbers
 set relativenumber	" Show relative line numbers where cursor is
 set history=10000
 set expandtab
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set autoindent
 set laststatus=2
 set hlsearch
@@ -313,15 +313,15 @@ endfunction
 
 function! RunTests(filename)
     let g:docker_command = ':!docker exec -it password-container bash -c '
+    let g:rootPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
     "Save the file and run tests
     if expand("%") != ""
         :w
     endif
     if match(a:filename, '\(feature\)$') != -1
-        let mixPathToRunTests = matchstr(expand("%:p"), '\(.*\)\/work\/.\{-}\/')
-        exe  g:docker_command . "\"cd " . mixPathToRunTests . " && cucumber --color " . a:filename . "\""
+        exec  g:docker_command . "\"cd " . g:rootPathToRunTests . " && cucumber --color " . a:filename . "\""
     else
-        exec g:docker_command . "\"rspec --color " . a:filename . "\""
+        exec g:docker_command . "\"cd " . g:rootPathToRunTests . " && rspec --color " . a:filename . "\""
     endif
 endfunction
 
