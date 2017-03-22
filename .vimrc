@@ -252,7 +252,7 @@ function! BuildUnitsPath()
     let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1
     if going_to_spec
         if in_app
-            let new_file = substitute(new_file, '^app/', '', '')
+            let new_file = substitute(new_file, '^web/', '', '')
         endif
         let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
         let new_file = substitute(new_file, 'lib/', 'spec/', '')
@@ -260,7 +260,7 @@ function! BuildUnitsPath()
         let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
         let new_file = substitute(new_file, 'spec/', 'lib/', '')
         if in_app
-            let new_file = 'app/' . new_file
+            let new_file = 'web/' . new_file
         endif
     endif
     return new_file
