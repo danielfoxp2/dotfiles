@@ -11,6 +11,7 @@ call vundle#begin()
   Bundle 'elixir-lang/vim-elixir'
   Bundle 'danielfoxp2/vim-multipurposetabkey'
   Bundle 'danielfoxp2/vim-automakedir'
+  Bundle 'danielfoxp2/vim-renamecurrentfile'
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -192,17 +193,17 @@ autocmd FileType cucumber set ai sw=2 sts=2 et
 " Changes vim buffer too
 " Stoled from THE GREAT Gary Bernhardt.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! RenameFile()
-    let old_name = expand('%')
-    let new_dir = expand('%:h')
-    let new_name = input('New file name: ', expand('%'))
-    if new_name != '' && new_name != old_name
-        exec ':saveas ' . new_name
-        exec ':silent !rm ' . old_name 
-        redraw!
-    endif
-endfunction
-map <leader>n :call RenameFile()<cr>
+"function! RenameFile()
+"    let old_name = expand('%')
+"    let new_dir = expand('%:h')
+"    let new_name = input('New file name: ', expand('%'))
+"    if new_name != '' && new_name != old_name
+"        exec ':saveas ' . new_name
+"        exec ':silent !rm ' . old_name 
+"        redraw!
+"    endif
+"endfunction
+"map <leader>n :call RenameFile()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
