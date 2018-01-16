@@ -10,6 +10,7 @@ call vundle#begin()
   Bundle 'ctrlpvim/ctrlp.vim'
   Bundle 'elixir-lang/vim-elixir'
   Bundle 'danielfoxp2/vim-multipurposetabkey'
+  Bundle 'danielfoxp2/vim-automakedir'
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -145,27 +146,27 @@ autocmd FileType cucumber set ai sw=2 sts=2 et
 " If the directory does not exist it will ask if you want to create it
 " Very nice...
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup AutoMkdir
-    autocmd!
-    autocmd BufNewFile * :call EnsureDirExists()
-augroup END
-function! EnsureDirExists()
-    let required_dir = expand("%:h")
-    if !isdirectory(required_dir)
-        call AskQuit("Directory '" . required_dir . "' doesn't exist.", "&Create it?")
-        try 
-            call mkdir(required_dir, 'p')
-        catch
-            call AskQuit("Can't create '" . required_dir . "'", "&Continue anyway?")
-        endtry
-    endif
-endfunction
+"augroup AutoMkdir
+"    autocmd!
+"    autocmd BufNewFile * :call EnsureDirExists()
+"augroup END
+"function! EnsureDirExists()
+"    let required_dir = expand("%:h")
+"    if !isdirectory(required_dir)
+"        call AskQuit("Directory '" . required_dir . "' doesn't exist.", "&Create it?")
+"        try 
+"            call mkdir(required_dir, 'p')
+"        catch
+"            call AskQuit("Can't create '" . required_dir . "'", "&Continue anyway?")
+"        endtry
+"    endif
+"endfunction
 
-function! AskQuit(msg, proposed_action)
-    if confirm(a:msg, "&Quit?\n" . a:proposed_action) == 1
-        exit
-    endif
-endfunction
+"function! AskQuit(msg, proposed_action)
+"    if confirm(a:msg, "&Quit?\n" . a:proposed_action) == 1
+"        exit
+"    endif
+"endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
