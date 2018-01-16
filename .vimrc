@@ -9,6 +9,7 @@ call vundle#begin()
   Bundle 'tpope/vim-surround'
   Bundle 'ctrlpvim/ctrlp.vim'
   Bundle 'elixir-lang/vim-elixir'
+  Bundle 'danielfoxp2/vim-multipurposetabkey'
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -173,15 +174,15 @@ endfunction
 " I've changed the name of the function which was InsertTabWrapper()
 " Stoled from THE GREAT Gary Bernhardt.
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! MultiPurposeTab()
-    let col = col('.') - 1
-    if !col || getline('.')[col -1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
-endfunction
-inoremap <tab> <c-r>=MultiPurposeTab()<cr>
+"function! MultiPurposeTab()
+"    let col = col('.') - 1
+"    if !col || getline('.')[col -1] !~ '\k'
+"        return "\<tab>"
+"    else
+"        return "\<c-p>"
+"    endif
+"endfunction
+"inoremap <tab> <c-r>=MultiPurposeTab()<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
