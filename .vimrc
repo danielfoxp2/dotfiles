@@ -12,6 +12,7 @@ call vundle#begin()
   Bundle 'danielfoxp2/vim-multipurposetabkey'
   Bundle 'danielfoxp2/vim-automakedir'
   Bundle 'danielfoxp2/vim-renamecurrentfile'
+  Bundle 'danielfoxp2/vim-openalternatefile-phx1.2' 
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
@@ -214,60 +215,60 @@ autocmd FileType cucumber set ai sw=2 sts=2 et
 " 
 " need to make it handle with alternate between acceptance too
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! OpenTestAlternate()
-    let new_file = AlternateForCurrentFile()
-    exec ':e ' . new_file
-endfunction
-function! AlternateForCurrentFile()
-    let current_file = expand("%")
+"function! OpenTestAlternate()
+"    let new_file = AlternateForCurrentFile()
+"    exec ':e ' . new_file
+"endfunction
+"function! AlternateForCurrentFile()
+"    let current_file = expand("%")
 
-    let going_to_acceptance = match(current_file, '\(.feature\|_context.exs\)$') != -1
+"    let going_to_acceptance = match(current_file, '\(.feature\|_context.exs\)$') != -1
 
-    if going_to_acceptance
-        let new_file = BuildAcceptancePath()
-    else
-        let new_file = BuildUnitsPath()
-    endif
+"    if going_to_acceptance
+"        let new_file = BuildAcceptancePath()
+"    else
+"        let new_file = BuildUnitsPath()
+"    endif
 
-    return new_file
-endfunction
-nnoremap <leader>. :call OpenTestAlternate()<cr>
+"    return new_file
+"endfunction
+"nnoremap <leader>. :call OpenTestAlternate()<cr>
 
-function! BuildAcceptancePath()
-    let current_file = expand("%")
-    let new_file = current_file
-    let in_feature = match(current_file, '.feature$') != -1
-    if in_feature 
-        let new_file = substitute(new_file, '\.feature$', '_context.exs', '')
-        let new_file = substitute(new_file, 'features/', 'features/contexts/', '')
-    else
-        let new_file = substitute(new_file, '_context\.exs$', '.feature', '')
-        let new_file = substitute(new_file, 'features/contexts/', 'features/', '')
-    endif
-    return new_file
-endfunction
+"function! BuildAcceptancePath()
+"    let current_file = expand("%")
+"    let new_file = current_file
+"    let in_feature = match(current_file, '.feature$') != -1
+"    if in_feature 
+"        let new_file = substitute(new_file, '\.feature$', '_context.exs', '')
+"        let new_file = substitute(new_file, 'features/', 'features/contexts/', '')
+"    else
+"        let new_file = substitute(new_file, '_context\.exs$', '.feature', '')
+"        let new_file = substitute(new_file, 'features/contexts/', 'features/', '')
+"    endif
+"    return new_file
+"endfunction
 
-function! BuildUnitsPath()
-    let current_file = expand("%")
-    let new_file = current_file
-    let in_spec = match(current_file, '_spec') != -1
-    let going_to_spec = !in_spec
-    let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1
-    if going_to_spec
-        if in_app
-            let new_file = substitute(new_file, '^web/', '', '')
-        endif
-        let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
-        let new_file = substitute(new_file, 'lib/', 'spec/', '')
-    else
-        let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
-        let new_file = substitute(new_file, 'spec/', 'lib/', '')
-        if in_app
-            let new_file = 'web/' . new_file
-        endif
-    endif
-    return new_file
-endfunction
+"function! BuildUnitsPath()
+"    let current_file = expand("%")
+"    let new_file = current_file
+"    let in_spec = match(current_file, '_spec') != -1
+"    let going_to_spec = !in_spec
+"    let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1
+"    if going_to_spec
+"        if in_app
+"            let new_file = substitute(new_file, '^web/', '', '')
+"        endif
+"        let new_file = substitute(new_file, '\.ex$', '_spec.exs', '')
+"        let new_file = substitute(new_file, 'lib/', 'spec/', '')
+"    else
+"        let new_file = substitute(new_file, '_spec\.exs$', '.ex', '')
+"        let new_file = substitute(new_file, 'spec/', 'lib/', '')
+"        if in_app
+"            let new_file = 'web/' . new_file
+"        endif
+"    endif
+"    return new_file
+"endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
