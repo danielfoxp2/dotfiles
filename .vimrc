@@ -12,7 +12,7 @@ call vundle#begin()
   Bundle 'danielfoxp2/vim-multipurposetabkey'
   Bundle 'danielfoxp2/vim-automakedir'
   Bundle 'danielfoxp2/vim-renamecurrentfile'
-  Bundle 'danielfoxp2/vim-openalternatefile-phx1.2' 
+  Bundle 'danielfoxp2/vim-runtestsindockercontainer' 
 call vundle#end()
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
