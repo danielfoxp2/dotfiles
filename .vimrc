@@ -140,6 +140,15 @@ autocmd FileType cucumber set ai sw=2 sts=2 et
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Everytime vim is entered the vundle plugins are installed
+autocmd VimEnter * call InstallVundlePlugins()
+function! InstallVundlePlugins()
+    :PluginInstall
+    :q
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " AUTO CREATION OF NON-EXISTENT DIRECTORIES
 " Found at http://www.ibm.com/developerworks/library/l-vim-script-5/
 " Everytime that a file is edited, if its path contains directories
