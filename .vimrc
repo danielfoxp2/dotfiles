@@ -7,6 +7,8 @@ call vundle#begin()
   Bundle 'altercation/vim-colors-solarized.git'                                                                                                                     
   Bundle 'romainl/apprentice'                                                                                                                                       
   Bundle 'tpope/vim-surround'
+  Bundle 'tpope/vim-fugitive'
+  Bundle 'tpope/vim-unimpaired'
   Bundle 'ctrlpvim/ctrlp.vim'
   Bundle 'elixir-lang/vim-elixir'
   Bundle 'danielfoxp2/vim-multipurposetabkey'
@@ -89,6 +91,17 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnamemod=':t'
 
 let g:bufferline_echo=0
+
+"""""""""""""""Status Line """"""""""""""""""""""""""""""""""""""""""""""""""""""
+" File name with path from current dir till file
+" Buffer number
+" Git branch - thanks Fugitive
+" If file was modified and not saved yet
+" Separation between left and right
+" Line and Column number - And the virtual column number 
+" Number of lines
+" I really want to learn how to put the file git status here too... 
+set statusline=%<%f[%n]%{fugitive#statusline()}%-4(%m%)%=%-19(%3l,%02c%03V%)[%L]
 
 
 " Mapping jj to ESC to go back to normal mode
