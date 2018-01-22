@@ -96,12 +96,13 @@ let g:bufferline_echo=0
 " File name with path from current dir till file
 " Buffer number
 " Git branch - thanks Fugitive
+" File git status**
 " If file was modified and not saved yet
 " Separation between left and right
 " Line and Column number - And the virtual column number 
 " Number of lines
-" I really want to learn how to put the file git status here too... 
-set statusline=%<%f[%n]%{fugitive#statusline()}%-4(%m%)%=%-19(%3l,%02c%03V%)[%L]
+" **Don't fully works, but it is a step forward (see the comments on g:gitstatus declaration)... 
+set statusline=%<%f[%n]%{fugitive#statusline()}[%{g:gitstatus}]%(%m%)%=%-19(%3l,%02c%03V%)[%L]
 
 
 " Mapping jj to ESC to go back to normal mode
@@ -354,6 +355,31 @@ function! RunTests(filename)
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Returns [x] where x is the file status in git                                                                                                   
+" [?] to untracked                                                                                                                                
+" [M] to modified                                                                                                                                 
+" [A] to staged                                                                                                                                   
+" It only works when open vim or switch between buffers                                                                                           
+" When vim lost focus with Ctrl+z or you change to another tab in your                                                                            
+" terminal it does not work. So, read the status with a grain of salt                                                                             
+function CurrentGitStatus()                                                                                                                       
+     let gitoutput = split(system('git status --porcelain -b '.shellescape(expand('%')).' 2>/dev/null'),'\n')                                      
+     if len(gitoutput) > 0                                                                                                                         
+         let stage_status = strpart(get(gitoutput, 1, ''), 0, 1)                                                                                   
+         let unstage_status = strpart(get(gitoutput, 1, ''), 1, 1)                                                                                 
+         if len(stage_status) > 0                                                                                                                  
+             let g:gitstatus = stage_status                                                                                                        
+         else                                                                                                                                      
+             let g:gitstatus = unstage_status                                                                                                      
+         endif                                                                                                                                     
+     else                                                                                                                                          
+         let g:gitstatus = ''                                                                                                                      
+     endif                                                                                                                                         
+endfunction                                                                                                                                       
+autocmd BufEnter,BufWritePost,FocusGained * call CurrentGitStatus()    
+
+
+
 " Source a global configuration file if available
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
