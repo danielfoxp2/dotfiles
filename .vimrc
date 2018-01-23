@@ -365,9 +365,9 @@ endfunction
 function CurrentGitStatus()                                                                                                                       
      let gitoutput = split(system('git status --porcelain -b '.shellescape(expand('%')).' 2>/dev/null'),'\n')                                      
      if len(gitoutput) > 0                                                                                                                         
-         let stage_status = strpart(get(gitoutput, 1, ''), 0, 1)                                                                                   
-         let unstage_status = strpart(get(gitoutput, 1, ''), 1, 1)                                                                                 
-         if len(stage_status) > 0                                                                                                                  
+         let stage_status = strpart(get(gitoutput, 1, ' '), 0, 1)                                                                                   
+         let unstage_status = strpart(get(gitoutput, 1, ' '), 1, 1)                                                                                 
+         if stage_status != ' '
              let g:gitstatus = stage_status                                                                                                        
          else                                                                                                                                      
              let g:gitstatus = unstage_status                                                                                                      
